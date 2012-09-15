@@ -42,12 +42,18 @@
 						this.ControllerContext.RequestContext.RouteData.Values[methodArgs[i].Name] = @params[i];
 					}
 
-					controller.Execute(this.ControllerContext.RequestContext);
-
 					var json = new JsonResult();
-					json.ExecuteResult(this.ControllerContext);
 
-					return json;
+					try
+					{
+						controller.Execute(this.ControllerContext.RequestContext);
+						json.ExecuteResult(this.ControllerContext);
+						return json;
+					}
+					catch (Exception e)
+					{
+						return this.Json(new { error = e.Message });
+					}
 				}
 				else
 				{
